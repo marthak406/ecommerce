@@ -11,6 +11,16 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
+    }
+
     /**
      * The attributes that are mass assignable.
      *
