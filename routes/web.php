@@ -12,7 +12,7 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('show');
 
 // untuk admin
 Route::prefix('admin')->group(function () {
-    Route::get('/', [LoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('admin.login.submit');
     Route::post('/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
