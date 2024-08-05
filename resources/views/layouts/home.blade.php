@@ -144,7 +144,7 @@
                 e.preventDefault();
 
                 $.ajax({
-                    url: "{{ route('login') }}",
+                    url: "{{ route('signin') }}",
                     type: 'POST',
                     data: {
                         email: $('#loginEmail').val(),
@@ -161,6 +161,7 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             });
+                            location.reload();
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -238,17 +239,15 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: response.message,
-                            });
                         }
                     },
                     error: function(xhr) {
-                        console.log(xhr.responseText);
-                        alert('Error: ' + xhr.responseText);
+                        if (xhr.status === 401) {
+                            $('#loginModal').modal('show');
+                        } else {
+                            console.log(xhr.responseText);
+                            alert('Error: ' + xhr.responseText);
+                        }
                     }
                 });
             });
