@@ -18,6 +18,7 @@ Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/midtrans/notification', [CartController::class, 'handleNotification'])->name('midtrans.notification');
 
 //login | register customer
 Route::post('/signin', [AuthController::class, 'login'])->name('signin'); // untuk customer

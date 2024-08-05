@@ -21,6 +21,10 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+        
         $user = Auth::user();
         $product = Product::find($request->product_id);
         $quantity = $request->quantity;
@@ -42,6 +46,11 @@ class CartController extends Controller
     public function showCart()
     {
         $user = Auth::user();
+        
+        if (!$user) {
+            return redirect()->route('home')->with('error', 'You need to login to view the cart.');
+        }
+
         $cartItems = CartItem::where('user_id', $user->id)->where('status', 'unpaid')->get();
         $totalPayment = $cartItems->sum('total');
 
@@ -113,5 +122,38 @@ class CartController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Something went wrong. Please try again.');
         }
+    }
+
+    public function handleNotification(Request $request)
+    {
+        $notification = $request->all();
+
+        Log::info('Midtrans notification: ', $notification);
+
+        $orderId = $notification['order_id'];
+        $transactionStatus = $notification['transaction_status'];
+
+        if (in_array($transactionStatus, ['capture', 'settlement'])) {
+            $cartItems = CartItem::where('order_id', $orderId)
+                                ->where('status', 'unpaid')
+                                ->get();
+
+            foreach ($cartItems as $cartItem) {
+                $cartItem->update(['status' => 'paid']);
+
+                // Reduce the product stock
+                $product = Product::find($cartItem->product_id);
+                if ($product) {
+                    $product->stock -= $cartItem->qty;
+                    $product->save();
+                }
+            }
+        } elseif (in_array($transactionStatus, ['deny', 'expire', 'cancel'])) {
+            CartItem::where('order_id', $orderId)
+                    ->where('status', 'unpaid')
+                    ->update(['status' => 'unpaid']);
+        }
+
+        return response()->json(['status' => 'success']);
     }
 }
