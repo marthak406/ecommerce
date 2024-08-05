@@ -17,6 +17,7 @@ Route::get('/cart/count', [CartController::class, 'getCartCount'])->name('cart.c
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
 //login | register customer
 Route::post('/signin', [AuthController::class, 'login'])->name('signin'); // untuk customer
