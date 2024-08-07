@@ -14,9 +14,9 @@
                         <p class="card-text">{{ Str::limit(strip_tags($product->description), 100) }}</p>
                         <p class="card-text"><strong>{{ "Rp " . number_format($product->price,2,',','.') }}</strong></p>
                         <p class="card-text"><strong>Stock:</strong> {{ $product->stock }}</p>
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3 w-auto">
                             <button class="btn btn-outline-secondary decrement-qty" type="button">-</button>
-                            <input type="number" class="form-control quantity-input" value="1" min="1" max="{{ $product->stock }}">
+                            <input type="number" class="form-control quantity-input" value="1" min="1" max="{{ $product->stock }}" style="max-width: 60px;">
                             <button class="btn btn-outline-secondary increment-qty" type="button">+</button>
                         </div>
                         @if($product->stock == 0)
